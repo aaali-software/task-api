@@ -8,6 +8,7 @@ import com.aziz.taskapi.dto.TaskCreateRequest;
 import com.aziz.taskapi.entity.Task;
 import com.aziz.taskapi.exception.ResourceNotFoundException;
 import com.aziz.taskapi.repository.TaskRepository;
+import com.aziz.taskapi.dto.TaskStatusUpdateRequest;
 
 /**
  * Service implementation for Task operations.
@@ -47,6 +48,16 @@ public class TaskServiceImpl implements TaskService {
                 .dueDate(request.getDueDate())
                 .build();
 
+        return taskRepository.save(task);
+    }
+
+    @Override
+    public Task updateTaskStatus(Long id, TaskStatusUpdateRequest request) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+
+        task.setStatus(request.getStatus());
+        
         return taskRepository.save(task);
     }
 }
