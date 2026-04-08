@@ -2,6 +2,7 @@ package com.aziz.taskapi.service;
 
 import java.util.List;
 
+import com.aziz.taskapi.dto.TaskCreateRequest;
 import com.aziz.taskapi.entity.Task;
 
 /**
@@ -17,4 +18,6 @@ public interface TaskService {
     List<Task> getAllTasks();
 
     Task getTaskById(Long id);
+
+    Task createTask(TaskCreateRequest request);
 }
