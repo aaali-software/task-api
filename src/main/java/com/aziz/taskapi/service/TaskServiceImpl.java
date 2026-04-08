@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.aziz.taskapi.dto.TaskCreateRequest;
 import com.aziz.taskapi.entity.Task;
+import com.aziz.taskapi.exception.ResourceNotFoundException;
 import com.aziz.taskapi.repository.TaskRepository;
 
 /**
@@ -34,7 +35,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task getTaskById(Long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
     }
 
     @Override
