@@ -3,9 +3,9 @@ package com.aziz.taskapi.service;
 import java.util.List;
 
 import com.aziz.taskapi.dto.TaskCreateRequest;
+import com.aziz.taskapi.dto.TaskResponse;
 import com.aziz.taskapi.dto.TaskStatusUpdateRequest;
 import com.aziz.taskapi.dto.TaskUpdateRequest;
-import com.aziz.taskapi.entity.Task;
 import com.aziz.taskapi.enums.TaskPriority;
 import com.aziz.taskapi.enums.TaskStatus;
 
@@ -25,15 +25,15 @@ import com.aziz.taskapi.enums.TaskStatus;
 
 public interface TaskService {
 
-    List<Task> getAllTasks(TaskStatus status, TaskPriority priority);
+    List<TaskResponse> getAllTasks(TaskStatus status, TaskPriority priority);
 
-    Task getTaskById(Long id);
+    TaskResponse getTaskById(Long id);
 
-    Task createTask(TaskCreateRequest request);
+    TaskResponse createTask(TaskCreateRequest request);
 
-    Task updateTaskStatus(Long id, TaskStatusUpdateRequest request);
+    TaskResponse updateTaskStatus(Long id, TaskStatusUpdateRequest request);
 
-    Task updateTask(Long id, TaskUpdateRequest request);
+    TaskResponse updateTask(Long id, TaskUpdateRequest request);
 
     void deleteTask(Long id);
 }

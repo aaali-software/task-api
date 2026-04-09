@@ -2,9 +2,8 @@ package com.aziz.taskapi.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.aziz.taskapi.dto.TaskCreateRequest;
+import com.aziz.taskapi.dto.TaskResponse;
 import com.aziz.taskapi.dto.TaskStatusUpdateRequest;
 import com.aziz.taskapi.dto.TaskUpdateRequest;
 import com.aziz.taskapi.entity.Task;
@@ -12,6 +11,7 @@ import com.aziz.taskapi.enums.TaskPriority;
 import com.aziz.taskapi.enums.TaskStatus;
 import com.aziz.taskapi.exception.ResourceNotFoundException;
 import com.aziz.taskapi.repository.TaskRepository;
+import org.springframework.stereotype.Service;
 
 /**
  * Service implementation for Task operations.
@@ -36,30 +36,34 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getAllTasks(TaskStatus status, TaskPriority priority) {
+    public List<TaskResponse> getAllTasks(TaskStatus status, TaskPriority priority) {
+        List<Task> tasks;
+
         if (status != null && priority != null) {
-            return taskRepository.findByStatusAndPriority(status, priority);
+            tasks = taskRepository.findByStatusAndPriority(status, priority);
+        } else if (status != null) {
+            tasks = taskRepository.findByStatus(status);
+        } else if (priority != null) {
+            tasks = taskRepository.findByPriority(priority);
+        } else {
+            tasks = taskRepository.findAll();
         }
 
-        if (status != null) {
-            return taskRepository.findByStatus(status);
-        }
-
-        if (priority != null) {
-            return taskRepository.findByPriority(priority);
-        }
-
-        return taskRepository.findAll();
+        return tasks.stream()
+                .map(this::mapToTaskResponse)
+                .toList();
     }
 
     @Override
-    public Task getTaskById(Long id) {
-        return taskRepository.findById(id)
+    public TaskResponse getTaskById(Long id) {
+        Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+
+        return mapToTaskResponse(task);
     }
 
     @Override
-    public Task createTask(TaskCreateRequest request) {
+    public TaskResponse createTask(TaskCreateRequest request) {
         Task task = Task.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
@@ -67,21 +71,23 @@ public class TaskServiceImpl implements TaskService {
                 .dueDate(request.getDueDate())
                 .build();
 
-        return taskRepository.save(task);
+        Task savedTask = taskRepository.save(task);
+        return mapToTaskResponse(savedTask);
     }
 
     @Override
-    public Task updateTaskStatus(Long id, TaskStatusUpdateRequest request) {
+    public TaskResponse updateTaskStatus(Long id, TaskStatusUpdateRequest request) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
         task.setStatus(request.getStatus());
 
-        return taskRepository.save(task);
+        Task updatedTask = taskRepository.save(task);
+        return mapToTaskResponse(updatedTask);
     }
 
     @Override
-    public Task updateTask(Long id, TaskUpdateRequest request) {
+    public TaskResponse updateTask(Long id, TaskUpdateRequest request) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
@@ -91,7 +97,8 @@ public class TaskServiceImpl implements TaskService {
         task.setPriority(request.getPriority());
         task.setDueDate(request.getDueDate());
 
-        return taskRepository.save(task);
+        Task updatedTask = taskRepository.save(task);
+        return mapToTaskResponse(updatedTask);
     }
 
     @Override
@@ -102,4 +109,16 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.delete(task);
     }
 
+    private TaskResponse mapToTaskResponse(Task task) {
+        return new TaskResponse(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getStatus(),
+                task.getPriority(),
+                task.getDueDate(),
+                task.getCreatedAt(),
+                task.getUpdatedAt()
+        );
+    }
 }

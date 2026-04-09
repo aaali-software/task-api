@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aziz.taskapi.dto.TaskCreateRequest;
+import com.aziz.taskapi.dto.TaskResponse;
 import com.aziz.taskapi.dto.TaskStatusUpdateRequest;
 import com.aziz.taskapi.dto.TaskUpdateRequest;
 import com.aziz.taskapi.entity.Task;
@@ -49,30 +50,30 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> getAllTasks(@RequestParam(required = false) TaskStatus status,
+    public List<TaskResponse> getAllTasks(@RequestParam(required = false) TaskStatus status,
                                 @RequestParam(required = false) TaskPriority priority) {
         return taskService.getAllTasks(status, priority);
     }
 
     @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable Long id) {
+    public TaskResponse getTaskById(@PathVariable Long id) {
         return taskService.getTaskById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@Valid @RequestBody TaskCreateRequest request) {
+    public TaskResponse createTask(@Valid @RequestBody TaskCreateRequest request) {
         return taskService.createTask(request);
     }
 
     @PatchMapping("/{id}/status")
-    public Task updateTaskStatus(@PathVariable Long id, @Valid 
+    public TaskResponse updateTaskStatus(@PathVariable Long id, @Valid 
                                 @RequestBody TaskStatusUpdateRequest request) {
         return taskService.updateTaskStatus(id, request);
     }
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable Long id,
+    public TaskResponse updateTask(@PathVariable Long id,
                             @Valid @RequestBody TaskUpdateRequest request) {
         return taskService.updateTask(id, request);
     }
