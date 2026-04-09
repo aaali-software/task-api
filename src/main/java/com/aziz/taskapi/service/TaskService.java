@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.aziz.taskapi.dto.TaskCreateRequest;
 import com.aziz.taskapi.dto.TaskStatusUpdateRequest;
+import com.aziz.taskapi.dto.TaskUpdateRequest;
 import com.aziz.taskapi.entity.Task;
 
 /**
@@ -15,6 +16,8 @@ import com.aziz.taskapi.entity.Task;
  * This interface is implemented by TaskServiceImpl, which uses the TaskRepository to perform the actual data retrieval from the database.
  * Additionally, I added a createTask method that takes a TaskCreateRequest object and an updateTaskStatus method that takes a TaskStatusUpdateRequest object, 
  * allowing for the creation of new tasks and updating the status of existing tasks, respectively.
+ * I also added an updateTaskStatus method that takes a TaskStatusUpdateRequest object, which can be used to update the status of a Task without affecting other fields.
+ * I also added an updateTask method that takes a TaskUpdateRequest object, which can be used to update other fields of a Task (e.g., title, description, priority, due date) in the future if needed.
  */
 
 public interface TaskService {
@@ -26,4 +29,6 @@ public interface TaskService {
     Task createTask(TaskCreateRequest request);
 
     Task updateTaskStatus(Long id, TaskStatusUpdateRequest request);
+
+    Task updateTask(Long id, TaskUpdateRequest request);
 }
