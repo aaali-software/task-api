@@ -6,6 +6,8 @@ import com.aziz.taskapi.dto.TaskCreateRequest;
 import com.aziz.taskapi.dto.TaskStatusUpdateRequest;
 import com.aziz.taskapi.dto.TaskUpdateRequest;
 import com.aziz.taskapi.entity.Task;
+import com.aziz.taskapi.enums.TaskPriority;
+import com.aziz.taskapi.enums.TaskStatus;
 
 /**
  * Service interface for Task operations.
@@ -23,7 +25,7 @@ import com.aziz.taskapi.entity.Task;
 
 public interface TaskService {
 
-    List<Task> getAllTasks();
+    List<Task> getAllTasks(TaskStatus status, TaskPriority priority);
 
     Task getTaskById(Long id);
 

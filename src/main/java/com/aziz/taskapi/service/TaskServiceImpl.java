@@ -8,6 +8,8 @@ import com.aziz.taskapi.dto.TaskCreateRequest;
 import com.aziz.taskapi.dto.TaskStatusUpdateRequest;
 import com.aziz.taskapi.dto.TaskUpdateRequest;
 import com.aziz.taskapi.entity.Task;
+import com.aziz.taskapi.enums.TaskPriority;
+import com.aziz.taskapi.enums.TaskStatus;
 import com.aziz.taskapi.exception.ResourceNotFoundException;
 import com.aziz.taskapi.repository.TaskRepository;
 
@@ -16,7 +18,8 @@ import com.aziz.taskapi.repository.TaskRepository;
  * This class implements the TaskService interface and provides methods to retrieve all tasks and get a task by its ID.
  * It uses the TaskRepository to interact with the database and perform CRUD operations on Task entities.
  * I implemented the TaskService interface in TaskServiceImpl, which uses the TaskRepository to fetch tasks from the database. 
- * The getAllTasks method retrieves all tasks, while getTaskById fetches a specific task by its ID, throwing an exception if not found.
+ * The getAllTasks method retrieves all tasks, optionally filtering by status and priority if those parameters are provided.
+ * The getTaskById method retrieves a specific task by its ID, throwing a ResourceNotFoundException if the task does not exist.
  * Additionally, I added a createTask method that takes a TaskCreateRequest object, constructs a new Task entity, and saves it to the database using the repository.
  * I also implemented the updateTaskStatus method, which updates the status of an existing task based on the provided TaskStatusUpdateRequest.
  * I also added an updateTask method that allows updating other fields of a Task (e.g., title, description, priority, due date) using a TaskUpdateRequest object.
@@ -33,7 +36,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getAllTasks() {
+    public List<Task> getAllTasks(TaskStatus status, TaskPriority priority) {
+        if (status != null && priority != null) {
+            return taskRepository.findByStatusAndPriority(status, priority);
+        }
+
+        if (status != null) {
+            return taskRepository.findByStatus(status);
+        }
+
+        if (priority != null) {
+            return taskRepository.findByPriority(priority);
+        }
+
         return taskRepository.findAll();
     }
 
