@@ -3,6 +3,7 @@ package com.aziz.taskapi.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,8 @@ import jakarta.validation.Valid;
  * Additionally, I added a POST endpoint to create a new task, which accepts a TaskCreateRequest object in the request body and returns the created Task with a 201 Created status.
  * I also added a PATCH endpoint to update the status of an existing task, which accepts a TaskStatusUpdateRequest object in the request body and returns the updated Task.
  * The controller methods call the corresponding service methods to perform the necessary operations and return the results as JSON responses.
+ * I also added a PUT endpoint to update other fields of a Task (e.g., title, description, priority, due date) using a TaskUpdateRequest object, which can be implemented in the future if needed.
+ * Finally, I added a DELETE endpoint to delete a Task by its ID, which can be implemented in the future to provide full CRUD functionality for Task entities.
  * This design follows the typical Spring Boot architecture, separating concerns between the controller (handling HTTP requests), service (business logic), and repository (data access).
  */
 @RestController
@@ -67,5 +70,11 @@ public class TaskController {
     public Task updateTask(@PathVariable Long id,
                         @Valid @RequestBody TaskUpdateRequest request) {
         return taskService.updateTask(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
     }
 }

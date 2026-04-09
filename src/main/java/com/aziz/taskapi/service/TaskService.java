@@ -18,6 +18,7 @@ import com.aziz.taskapi.entity.Task;
  * allowing for the creation of new tasks and updating the status of existing tasks, respectively.
  * I also added an updateTaskStatus method that takes a TaskStatusUpdateRequest object, which can be used to update the status of a Task without affecting other fields.
  * I also added an updateTask method that takes a TaskUpdateRequest object, which can be used to update other fields of a Task (e.g., title, description, priority, due date) in the future if needed.
+ * Finally, I added a deleteTask method that allows for the deletion of a Task by its ID, which can be implemented in the future to provide full CRUD functionality for Task entities.
  */
 
 public interface TaskService {
@@ -31,4 +32,6 @@ public interface TaskService {
     Task updateTaskStatus(Long id, TaskStatusUpdateRequest request);
 
     Task updateTask(Long id, TaskUpdateRequest request);
+
+    void deleteTask(Long id);
 }

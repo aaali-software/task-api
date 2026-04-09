@@ -19,7 +19,8 @@ import com.aziz.taskapi.repository.TaskRepository;
  * The getAllTasks method retrieves all tasks, while getTaskById fetches a specific task by its ID, throwing an exception if not found.
  * Additionally, I added a createTask method that takes a TaskCreateRequest object, constructs a new Task entity, and saves it to the database using the repository.
  * I also implemented the updateTaskStatus method, which updates the status of an existing task based on the provided TaskStatusUpdateRequest.
- * Finally, I added an updateTask method that allows updating other fields of a Task (e.g., title, description, priority, due date) using a TaskUpdateRequest object.
+ * I also added an updateTask method that allows updating other fields of a Task (e.g., title, description, priority, due date) using a TaskUpdateRequest object.
+ * Finally, I implemented a deleteTask method that deletes a Task by its ID, throwing an exception if the task is not found.
  */
 
 @Service
@@ -66,16 +67,24 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task updateTask(Long id, TaskUpdateRequest request) {
-    Task task = taskRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
-    task.setTitle(request.getTitle());
-    task.setDescription(request.getDescription());
-    task.setStatus(request.getStatus());
-    task.setPriority(request.getPriority());
-    task.setDueDate(request.getDueDate());
+        task.setTitle(request.getTitle());
+        task.setDescription(request.getDescription());
+        task.setStatus(request.getStatus());
+        task.setPriority(request.getPriority());
+        task.setDueDate(request.getDueDate());
 
-    return taskRepository.save(task);
-}
+        return taskRepository.save(task);
+    }
+
+    @Override
+    public void deleteTask(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+
+        taskRepository.delete(task);
+    }
 
 }
