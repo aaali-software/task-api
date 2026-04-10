@@ -50,3 +50,7 @@ application-dev.properties
 
 # Mac/Linux temp files
 *.swp
+
+# Postman generated files
+postman/
+.postman/
