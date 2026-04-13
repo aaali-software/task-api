@@ -3,6 +3,7 @@ package com.aziz.taskapi.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.aziz.taskapi.dto.PagedResponse;
@@ -18,15 +19,26 @@ import com.aziz.taskapi.repository.TaskRepository;
 
 /**
  * Service implementation for Task operations.
- * This class implements the TaskService interface and provides methods to retrieve all tasks and get a task by its ID.
- * It uses the TaskRepository to interact with the database and perform CRUD operations on Task entities.
- * I implemented the TaskService interface in TaskServiceImpl, which uses the TaskRepository to fetch tasks from the database. 
- * The getAllTasks method retrieves all tasks, optionally filtering by status and priority if those parameters are provided.
- * The getTaskById method retrieves a specific task by its ID, throwing a ResourceNotFoundException if the task does not exist.
- * Additionally, I added a createTask method that takes a TaskCreateRequest object, constructs a new Task entity, and saves it to the database using the repository.
- * I also implemented the updateTaskStatus method, which updates the status of an existing task based on the provided TaskStatusUpdateRequest.
- * I also added an updateTask method that allows updating other fields of a Task (e.g., title, description, priority, due date) using a TaskUpdateRequest object.
- * Finally, I implemented a deleteTask method that deletes a Task by its ID, throwing an exception if the task is not found.
+ * This class implements the TaskService interface and provides methods to
+ * retrieve all tasks and get a task by its ID.
+ * It uses the TaskRepository to interact with the database and perform CRUD
+ * operations on Task entities.
+ * I implemented the TaskService interface in TaskServiceImpl, which uses the
+ * TaskRepository to fetch tasks from the database.
+ * The getAllTasks method retrieves all tasks, optionally filtering by status
+ * and priority if those parameters are provided.
+ * The getTaskById method retrieves a specific task by its ID, throwing a
+ * ResourceNotFoundException if the task does not exist.
+ * Additionally, I added a createTask method that takes a TaskCreateRequest
+ * object, constructs a new Task entity, and saves it to the database using the
+ * repository.
+ * I also implemented the updateTaskStatus method, which updates the status of
+ * an existing task based on the provided TaskStatusUpdateRequest.
+ * I also added an updateTask method that allows updating other fields of a Task
+ * (e.g., title, description, priority, due date) using a TaskUpdateRequest
+ * object.
+ * Finally, I implemented a deleteTask method that deletes a Task by its ID,
+ * throwing an exception if the task is not found.
  */
 
 @Service
@@ -39,8 +51,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public PagedResponse<TaskResponse> getAllTasks(TaskStatus status, TaskPriority priority, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public PagedResponse<TaskResponse> getAllTasks(
+            TaskStatus status,
+            TaskPriority priority,
+            int page,
+            int size,
+            String sortBy,
+            String direction) {
+
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Task> taskPage;
 
@@ -65,8 +88,7 @@ public class TaskServiceImpl implements TaskService {
                 taskPage.getSize(),
                 taskPage.getTotalElements(),
                 taskPage.getTotalPages(),
-                taskPage.isLast()
-        );
+                taskPage.isLast());
     }
 
     @Override
@@ -133,7 +155,6 @@ public class TaskServiceImpl implements TaskService {
                 task.getPriority(),
                 task.getDueDate(),
                 task.getCreatedAt(),
-                task.getUpdatedAt()
-        );
+                task.getUpdatedAt());
     }
 }

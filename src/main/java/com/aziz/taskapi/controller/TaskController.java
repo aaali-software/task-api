@@ -1,7 +1,5 @@
 package com.aziz.taskapi.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,8 +52,14 @@ public class TaskController {
             @RequestParam(required = false) TaskStatus status,
             @RequestParam(required = false) TaskPriority priority,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return taskService.getAllTasks(status, priority, page, size);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt,desc") String sort) {
+
+        String[] sortParams = sort.split(",");
+        String sortBy = sortParams[0];
+        String direction = sortParams.length > 1 ? sortParams[1] : "asc";
+
+        return taskService.getAllTasks(status, priority, page, size, sortBy, direction);
     }
 
     @GetMapping("/{id}")

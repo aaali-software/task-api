@@ -50,11 +50,12 @@ class TaskServiceImplTest {
         Page<Task> page = new PageImpl<>(
                 List.of(task),
                 PageRequest.of(0, 10),
-                1);
+                1
+        );
 
         when(taskRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        var result = taskService.getAllTasks(null, null, 0, 10);
+        var result = taskService.getAllTasks(null, null, 0, 10, "createdAt", "desc");
 
         assertEquals(1, result.getContent().size());
         assertEquals("Test Task", result.getContent().get(0).getTitle());
@@ -65,6 +66,31 @@ class TaskServiceImplTest {
 
         verify(taskRepository, times(1)).findAll(any(Pageable.class));
     }
+
+    @Test
+    void shouldReturnAllTasksWithSorting() {
+        Task task = Task.builder()
+                .id(1L)
+                .title("Test Task")
+                .status(TaskStatus.PENDING)
+                .priority(TaskPriority.HIGH)
+                .build();
+
+        Page<Task> page = new PageImpl<>(
+                List.of(task),
+                PageRequest.of(0, 5),
+                1
+        );
+
+        when(taskRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        var result = taskService.getAllTasks(null, null, 0, 5, "dueDate", "asc");
+
+        assertEquals(1, result.getContent().size());
+        assertEquals("Test Task", result.getContent().get(0).getTitle());
+
+        verify(taskRepository, times(1)).findAll(any(Pageable.class));
+}
 
     @Test
     void shouldReturnTaskById() {

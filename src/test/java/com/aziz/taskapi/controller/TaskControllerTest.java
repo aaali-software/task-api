@@ -66,7 +66,8 @@ class TaskControllerTest {
                                 1,
                                 true);
 
-                when(taskService.getAllTasks(null, null, 0, 10)).thenReturn(response);
+                when(taskService.getAllTasks(null, null, 0, 10, "createdAt", "desc"))
+                                .thenReturn(response);
 
                 mockMvc.perform(get("/api/tasks"))
                                 .andExpect(status().isOk())
@@ -81,7 +82,7 @@ class TaskControllerTest {
                                 .andExpect(jsonPath("$.totalPages").value(1))
                                 .andExpect(jsonPath("$.last").value(true));
 
-                verify(taskService).getAllTasks(null, null, 0, 10);
+                verify(taskService).getAllTasks(null, null, 0, 10, "createdAt", "desc");
         }
 
         @Test
@@ -253,7 +254,7 @@ class TaskControllerTest {
                                 1,
                                 true);
 
-                when(taskService.getAllTasks(TaskStatus.PENDING, null, 0, 10))
+                when(taskService.getAllTasks(TaskStatus.PENDING, null, 0, 10, "createdAt", "desc"))
                                 .thenReturn(response);
 
                 mockMvc.perform(get("/api/tasks?status=PENDING"))
@@ -262,6 +263,27 @@ class TaskControllerTest {
                                 .andExpect(jsonPath("$.page").value(0))
                                 .andExpect(jsonPath("$.size").value(10));
 
-                verify(taskService).getAllTasks(TaskStatus.PENDING, null, 0, 10);
+                verify(taskService).getAllTasks(TaskStatus.PENDING, null, 0, 10, "createdAt", "desc");
+        }
+
+        @Test
+        void shouldReturnTasksWithCustomSorting() throws Exception {
+                PagedResponse<TaskResponse> response = new PagedResponse<>(
+                                List.of(),
+                                0,
+                                5,
+                                0,
+                                0,
+                                true);
+
+                when(taskService.getAllTasks(null, null, 0, 5, "dueDate", "asc"))
+                                .thenReturn(response);
+
+                mockMvc.perform(get("/api/tasks?page=0&size=5&sort=dueDate,asc"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.page").value(0))
+                                .andExpect(jsonPath("$.size").value(5));
+
+                verify(taskService).getAllTasks(null, null, 0, 5, "dueDate", "asc");
         }
 }
