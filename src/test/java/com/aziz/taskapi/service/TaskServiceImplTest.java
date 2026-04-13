@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -50,8 +51,7 @@ class TaskServiceImplTest {
         Page<Task> page = new PageImpl<>(
                 List.of(task),
                 PageRequest.of(0, 10),
-                1
-        );
+                1);
 
         when(taskRepository.findAll(any(Pageable.class))).thenReturn(page);
 
@@ -79,8 +79,7 @@ class TaskServiceImplTest {
         Page<Task> page = new PageImpl<>(
                 List.of(task),
                 PageRequest.of(0, 5),
-                1
-        );
+                1);
 
         when(taskRepository.findAll(any(Pageable.class))).thenReturn(page);
 
@@ -90,7 +89,116 @@ class TaskServiceImplTest {
         assertEquals("Test Task", result.getContent().get(0).getTitle());
 
         verify(taskRepository, times(1)).findAll(any(Pageable.class));
-}
+    }
+
+    @Test
+    void shouldReturnTasksFilteredByStatus() {
+        Task task = Task.builder()
+                .id(1L)
+                .title("Pending Task")
+                .status(TaskStatus.PENDING)
+                .priority(TaskPriority.MEDIUM)
+                .build();
+
+        Page<Task> page = new PageImpl<>(
+                List.of(task),
+                PageRequest.of(0, 10),
+                1);
+
+        when(taskRepository.findByStatus(eq(TaskStatus.PENDING), any(Pageable.class)))
+                .thenReturn(page);
+
+        var result = taskService.getAllTasks(TaskStatus.PENDING, null, 0, 10, "createdAt", "desc");
+
+        assertEquals(1, result.getContent().size());
+        assertEquals("Pending Task", result.getContent().get(0).getTitle());
+        assertEquals(TaskStatus.PENDING, result.getContent().get(0).getStatus());
+
+        verify(taskRepository, times(1)).findByStatus(eq(TaskStatus.PENDING), any(Pageable.class));
+    }
+
+    @Test
+    void shouldReturnTasksFilteredByPriority() {
+        Task task = Task.builder()
+                .id(2L)
+                .title("High Priority Task")
+                .status(TaskStatus.IN_PROGRESS)
+                .priority(TaskPriority.HIGH)
+                .build();
+
+        Page<Task> page = new PageImpl<>(
+                List.of(task),
+                PageRequest.of(0, 10),
+                1);
+
+        when(taskRepository.findByPriority(eq(TaskPriority.HIGH), any(Pageable.class)))
+                .thenReturn(page);
+
+        var result = taskService.getAllTasks(null, TaskPriority.HIGH, 0, 10, "createdAt", "desc");
+
+        assertEquals(1, result.getContent().size());
+        assertEquals("High Priority Task", result.getContent().get(0).getTitle());
+        assertEquals(TaskPriority.HIGH, result.getContent().get(0).getPriority());
+
+        verify(taskRepository, times(1)).findByPriority(eq(TaskPriority.HIGH), any(Pageable.class));
+    }
+
+    @Test
+    void shouldReturnTasksFilteredByStatusAndPriority() {
+        Task task = Task.builder()
+                .id(3L)
+                .title("Filtered Task")
+                .status(TaskStatus.PENDING)
+                .priority(TaskPriority.HIGH)
+                .build();
+
+        Page<Task> page = new PageImpl<>(
+                List.of(task),
+                PageRequest.of(0, 10),
+                1);
+
+        when(taskRepository.findByStatusAndPriority(
+                eq(TaskStatus.PENDING),
+                eq(TaskPriority.HIGH),
+                any(Pageable.class)))
+                .thenReturn(page);
+
+        var result = taskService.getAllTasks(TaskStatus.PENDING, TaskPriority.HIGH, 0, 10, "createdAt", "desc");
+
+        assertEquals(1, result.getContent().size());
+        assertEquals("Filtered Task", result.getContent().get(0).getTitle());
+        assertEquals(TaskStatus.PENDING, result.getContent().get(0).getStatus());
+        assertEquals(TaskPriority.HIGH, result.getContent().get(0).getPriority());
+
+        verify(taskRepository, times(1)).findByStatusAndPriority(
+                eq(TaskStatus.PENDING),
+                eq(TaskPriority.HIGH),
+                any(Pageable.class));
+    }
+
+    @Test
+    void shouldReturnAllTasksWithAscendingSort() {
+        Task task = Task.builder()
+                .id(4L)
+                .title("Ascending Sort Task")
+                .status(TaskStatus.COMPLETED)
+                .priority(TaskPriority.LOW)
+                .build();
+
+        Page<Task> page = new PageImpl<>(
+                List.of(task),
+                PageRequest.of(0, 5),
+                1);
+
+        when(taskRepository.findAll(any(Pageable.class))).thenReturn(page);
+
+        var result = taskService.getAllTasks(null, null, 0, 5, "dueDate", "asc");
+
+        assertEquals(1, result.getContent().size());
+        assertEquals("Ascending Sort Task", result.getContent().get(0).getTitle());
+
+        verify(taskRepository, times(1)).findAll(any(Pageable.class));
+    }
 
     @Test
     void shouldReturnTaskById() {
