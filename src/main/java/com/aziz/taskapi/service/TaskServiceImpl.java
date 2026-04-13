@@ -1,7 +1,11 @@
 package com.aziz.taskapi.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
+import com.aziz.taskapi.dto.PagedResponse;
 import com.aziz.taskapi.dto.TaskCreateRequest;
 import com.aziz.taskapi.dto.TaskResponse;
 import com.aziz.taskapi.dto.TaskStatusUpdateRequest;
@@ -11,7 +15,6 @@ import com.aziz.taskapi.enums.TaskPriority;
 import com.aziz.taskapi.enums.TaskStatus;
 import com.aziz.taskapi.exception.ResourceNotFoundException;
 import com.aziz.taskapi.repository.TaskRepository;
-import org.springframework.stereotype.Service;
 
 /**
  * Service implementation for Task operations.
@@ -36,22 +39,34 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskResponse> getAllTasks(TaskStatus status, TaskPriority priority) {
-        List<Task> tasks;
+    public PagedResponse<TaskResponse> getAllTasks(TaskStatus status, TaskPriority priority, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Task> taskPage;
 
         if (status != null && priority != null) {
-            tasks = taskRepository.findByStatusAndPriority(status, priority);
+            taskPage = taskRepository.findByStatusAndPriority(status, priority, pageable);
         } else if (status != null) {
-            tasks = taskRepository.findByStatus(status);
+            taskPage = taskRepository.findByStatus(status, pageable);
         } else if (priority != null) {
-            tasks = taskRepository.findByPriority(priority);
+            taskPage = taskRepository.findByPriority(priority, pageable);
         } else {
-            tasks = taskRepository.findAll();
+            taskPage = taskRepository.findAll(pageable);
         }
 
-        return tasks.stream()
+        var content = taskPage.getContent()
+                .stream()
                 .map(this::mapToTaskResponse)
                 .toList();
+
+        return new PagedResponse<>(
+                content,
+                taskPage.getNumber(),
+                taskPage.getSize(),
+                taskPage.getTotalElements(),
+                taskPage.getTotalPages(),
+                taskPage.isLast()
+        );
     }
 
     @Override

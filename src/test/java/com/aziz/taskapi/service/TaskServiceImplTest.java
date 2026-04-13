@@ -16,14 +16,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.aziz.taskapi.dto.TaskStatusUpdateRequest;
 import com.aziz.taskapi.dto.TaskUpdateRequest;
 import com.aziz.taskapi.entity.Task;
 import com.aziz.taskapi.enums.TaskPriority;
 import com.aziz.taskapi.enums.TaskStatus;
-import com.aziz.taskapi.repository.TaskRepository;
 import com.aziz.taskapi.exception.ResourceNotFoundException;
+import com.aziz.taskapi.repository.TaskRepository;
 
 @ExtendWith(MockitoExtension.class)
 class TaskServiceImplTest {
@@ -43,14 +47,23 @@ class TaskServiceImplTest {
                 .priority(TaskPriority.HIGH)
                 .build();
 
-        when(taskRepository.findAll()).thenReturn(List.of(task));
+        Page<Task> page = new PageImpl<>(
+                List.of(task),
+                PageRequest.of(0, 10),
+                1);
 
-        var result = taskService.getAllTasks(null, null);
+        when(taskRepository.findAll(any(Pageable.class))).thenReturn(page);
 
-        assertEquals(1, result.size());
-        assertEquals("Test Task", result.get(0).getTitle());
+        var result = taskService.getAllTasks(null, null, 0, 10);
 
-        verify(taskRepository, times(1)).findAll();
+        assertEquals(1, result.getContent().size());
+        assertEquals("Test Task", result.getContent().get(0).getTitle());
+        assertEquals(0, result.getPage());
+        assertEquals(10, result.getSize());
+        assertEquals(1, result.getTotalElements());
+        assertEquals(1, result.getTotalPages());
+
+        verify(taskRepository, times(1)).findAll(any(Pageable.class));
     }
 
     @Test

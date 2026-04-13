@@ -22,6 +22,7 @@ import com.aziz.taskapi.dto.TaskUpdateRequest;
 import com.aziz.taskapi.enums.TaskPriority;
 import com.aziz.taskapi.enums.TaskStatus;
 import com.aziz.taskapi.service.TaskService;
+import com.aziz.taskapi.dto.PagedResponse;
 
 import jakarta.validation.Valid;
 
@@ -49,9 +50,12 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<TaskResponse> getAllTasks(@RequestParam(required = false) TaskStatus status,
-                                @RequestParam(required = false) TaskPriority priority) {
-        return taskService.getAllTasks(status, priority);
+    public PagedResponse<TaskResponse> getAllTasks(
+            @RequestParam(required = false) TaskStatus status,
+            @RequestParam(required = false) TaskPriority priority,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return taskService.getAllTasks(status, priority, page, size);
     }
 
     @GetMapping("/{id}")

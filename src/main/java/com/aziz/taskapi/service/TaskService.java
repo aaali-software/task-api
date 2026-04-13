@@ -1,7 +1,6 @@
 package com.aziz.taskapi.service;
 
-import java.util.List;
-
+import com.aziz.taskapi.dto.PagedResponse;
 import com.aziz.taskapi.dto.TaskCreateRequest;
 import com.aziz.taskapi.dto.TaskResponse;
 import com.aziz.taskapi.dto.TaskStatusUpdateRequest;
@@ -25,7 +24,7 @@ import com.aziz.taskapi.enums.TaskStatus;
 
 public interface TaskService {
 
-    List<TaskResponse> getAllTasks(TaskStatus status, TaskPriority priority);
+    PagedResponse<TaskResponse> getAllTasks(TaskStatus status, TaskPriority priority, int page, int size);
 
     TaskResponse getTaskById(Long id);
 

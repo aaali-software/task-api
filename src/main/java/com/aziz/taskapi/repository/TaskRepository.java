@@ -1,7 +1,7 @@
 package com.aziz.taskapi.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.aziz.taskapi.entity.Task;
@@ -22,15 +22,15 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     /**
      * Find tasks by status.
      */
-    List<Task> findByStatus(TaskStatus status);
+    Page<Task> findByStatus(TaskStatus status, Pageable pageable);
 
     /**
      * Find tasks by priority.
      */
-    List<Task> findByPriority(TaskPriority priority);
+    Page<Task> findByPriority(TaskPriority priority, Pageable pageable);
 
     /**
      * Find tasks by both status and priority.
      */
-    List<Task> findByStatusAndPriority(TaskStatus status, TaskPriority priority);
+    Page<Task> findByStatusAndPriority(TaskStatus status, TaskPriority priority, Pageable pageable);
 }
