@@ -145,9 +145,9 @@ spring.datasource.password=your_password
 
 ### 📊 Code Coverage
 
-83%+ coverage
-Service layer fully tested (including filtering & sorting branches)
-Controller layer tested with MockMvc
+- 83%+ coverage
+- Service layer fully tested (including filtering & sorting branches)
+- Controller layer tested with MockMvc
 
 ### 🚀 Future Improvements
 
