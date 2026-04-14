@@ -94,29 +94,44 @@ A production-style \*\*Task Management REST API\*\* built with \*\*Spring Boot\*
 
 ?page=0\&size=10
 
+```text
+
 \### Sorting
+
+```text
 
 ?sort=createdAt,desc
 ?sort=dueDate,asc
 
+```text
+
 \### Filtering
+
+```text
 
 ?status=PENDING
 ?priority=HIGH
 ?status=IN_PROGRESS&priority=MEDIUM
 
+```text
 
 \### 📘 Swagger UI
 
 Once the app is running:
 
+```text
+
 http://localhost:8080/swagger-ui/index.html
 
+```text
 
 \### 🧪 Example Request
 Create Task
 
 POST /api/tasks
+
+```text
+
 {
   "title": "Finish backend project",
   "description": "Complete Task API with tests and deployment",
@@ -124,36 +139,54 @@ POST /api/tasks
   "dueDate": "2026-04-20T18:00:00"
 }
 
+```text
 
 \### ⚙️ Local Setup
 
 1. Clone repo
 
+```text
+
 git clone https://github.com/aaali-software/task-api.git
 cd task-api
+
+```text
 
 2. Configure PostgreSQL
 
 Create a database:
 
+```text
+
 CREATE DATABASE taskdb;
+
+```text
 
 Update application.properties :
 
-CREATE DATABASE taskdb;
+```text
 
 spring.datasource.url=jdbc:postgresql://localhost:5432/taskdb
 spring.datasource.username=postgres
 spring.datasource.password=your_password
 
+```text
+
 3. Run the app
+
+```text
 
 ./gradlew bootRun
 
+```text
 
 \### 🧪 Run Tests
 
+```text
+
 ./gradlew test
+
+```text
 
 \### 📊 Code Coverage
 83%+ coverage
