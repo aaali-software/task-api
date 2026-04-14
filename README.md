@@ -1,62 +1,52 @@
 # Task API 🚀
 
-A production-style **Task Management REST API** built with **Spring Boot**, featuring PostgreSQL persistence, pagination, sorting, filtering, and full test coverage.
+A production-style **Task Management REST API** built with **Spring Boot**, deployed via Docker and backed by PostgreSQL, featuring CRUD operations, filtering, pagination, sorting, Swagger docs, and 83% automated test coverage.
+
+---
+
+## 🌐 Live Demo
+
+- **API Base URL:** https://task-api-tug6.onrender.com
+- **Swagger UI:** https://task-api-tug6.onrender.com/swagger-ui/index.html
 
 ---
 
 ## 🧠 Features
 
-- ✅ CRUD operations for tasks
-
-- ✅ Filtering by status and priority
-
+- ✅ Full CRUD operations for tasks
+- ✅ Filtering by **status** and **priority**
 - ✅ Pagination (`page`, `size`)
-
 - ✅ Sorting (`sort=field,asc|desc`)
-
-- ✅ PostgreSQL integration
-
+- ✅ PostgreSQL persistence
 - ✅ Swagger/OpenAPI documentation
-
-- ✅ 83%+ test coverage (JUnit + Mockito)
+- ✅ 83%+ automated test coverage (JUnit + Mockito)
 
 ---
 
 ## 🛠️ Tech Stack
 
 - **Java 21**
-
 - **Spring Boot**
-
 - **Spring Data JPA**
-
 - **PostgreSQL**
-
 - **Gradle**
-
 - **JUnit 5 + Mockito**
-
 - **Swagger (OpenAPI)**
+- **Docker**
+- **Render (Cloud Deployment)**
 
 ---
 
 ## 📦 API Endpoints
 
-| Method | Endpoint | Description |
-
-|------|--------|-------------|
-
-| GET | `/api/tasks` | Get all tasks (supports filtering, pagination, sorting) |
-
-| GET | `/api/tasks/{id}` | Get task by ID |
-
-| POST | `/api/tasks` | Create a new task |
-
-| PATCH | `/api/tasks/{id}/status` | Update task status |
-
-| PUT | `/api/tasks/{id}` | Update full task |
-
-| DELETE | `/api/tasks/{id}` | Delete task |
+| Method | Endpoint                 | Description                                             |
+| ------ | ------------------------ | ------------------------------------------------------- |
+| GET    | `/api/tasks`             | Get all tasks (supports filtering, pagination, sorting) |
+| GET    | `/api/tasks/{id}`        | Get task by ID                                          |
+| POST   | `/api/tasks`             | Create a new task                                       |
+| PATCH  | `/api/tasks/{id}/status` | Update task status                                      |
+| PUT    | `/api/tasks/{id}`        | Update full task                                        |
+| DELETE | `/api/tasks/{id}`        | Delete task                                             |
 
 ---
 
@@ -97,7 +87,7 @@ Create Task
 
 POST /api/tasks
 
-```text
+```json
 {
   "title": "Finish backend project",
   "description": "Complete Task API with tests and deployment",
@@ -110,7 +100,7 @@ POST /api/tasks
 
 1. Clone repo
 
-```text
+```bash
 git clone https://github.com/aaali-software/task-api.git
 cd task-api
 ```
@@ -119,7 +109,7 @@ cd task-api
 
 Create a database:
 
-```text
+```sql
 CREATE DATABASE taskdb;
 ```
 
@@ -133,13 +123,13 @@ spring.datasource.password=your_password
 
 3. Run the app
 
-```text
+```bash
 ./gradlew bootRun
 ```
 
 ### 🧪 Run Tests
 
-```text
+```bash
 ./gradlew test
 ```
 
@@ -153,8 +143,8 @@ spring.datasource.password=your_password
 
 - Authentication (JWT)
 - Role-based access control
-- Dockerization
-- Cloud deployment (Render / Railway)
+- CI/CD pipeline (GitHub Actions)
+- Docker Compose for local environment
 - API rate limiting
 
 ### 👨‍💻 Author
@@ -172,6 +162,7 @@ This project was built to simulate a real-world backend service, focusing on:
 - clean architecture
 - test-driven development practices
 - production-ready API patterns
+- cloud deployment with Docker
 
 ## 📄 License
 
