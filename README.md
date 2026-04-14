@@ -1,66 +1,46 @@
-\# Task API 🚀
-
-
+# Task API 🚀
 
 A production-style \*\*Task Management REST API\*\* built with \*\*Spring Boot\*\*, featuring PostgreSQL persistence, pagination, sorting, filtering, and full test coverage.
 
+---
 
+## 🧠 Features
 
-\---
+- ✅ CRUD operations for tasks
 
+- ✅ Filtering by status and priority
 
+- ✅ Pagination (`page`, `size`)
 
-\## 🧠 Features
+- ✅ Sorting (`sort=field,asc|desc`)
 
+- ✅ PostgreSQL integration
 
+- ✅ Swagger/OpenAPI documentation
 
-\- ✅ CRUD operations for tasks  
+- ✅ 83%+ test coverage (JUnit + Mockito)
 
-\- ✅ Filtering by status and priority  
+---
 
-\- ✅ Pagination (`page`, `size`)  
+## 🛠️ Tech Stack
 
-\- ✅ Sorting (`sort=field,asc|desc`)  
+- \*\*Java 21\*\*
 
-\- ✅ PostgreSQL integration  
+- \*\*Spring Boot\*\*
 
-\- ✅ Swagger/OpenAPI documentation  
+- \*\*Spring Data JPA\*\*
 
-\- ✅ 83%+ test coverage (JUnit + Mockito)  
+- \*\*PostgreSQL\*\*
 
+- \*\*Gradle\*\*
 
+- \*\*JUnit 5 + Mockito\*\*
 
-\---
+- \*\*Swagger (OpenAPI)\*\*
 
+---
 
-
-\## 🛠️ Tech Stack
-
-
-
-\- \*\*Java 21\*\*
-
-\- \*\*Spring Boot\*\*
-
-\- \*\*Spring Data JPA\*\*
-
-\- \*\*PostgreSQL\*\*
-
-\- \*\*Gradle\*\*
-
-\- \*\*JUnit 5 + Mockito\*\*
-
-\- \*\*Swagger (OpenAPI)\*\*
-
-
-
-\---
-
-
-
-\## 📦 API Endpoints
-
-
+## 📦 API Endpoints
 
 | Method | Endpoint | Description |
 
@@ -78,34 +58,28 @@ A production-style \*\*Task Management REST API\*\* built with \*\*Spring Boot\*
 
 | DELETE | `/api/tasks/{id}` | Delete task |
 
+---
 
+## 🔍 Query Parameters
 
-\---
-
-
-
-\## 🔍 Query Parameters
-
-
-
-\### Pagination
+### Pagination
 
 ```text
 
 ?page=0\&size=10
 
-```text
+```
 
-\### Sorting
+### Sorting
 
 ```text
 
 ?sort=createdAt,desc
 ?sort=dueDate,asc
 
-```text
+```
 
-\### Filtering
+### Filtering
 
 ```text
 
@@ -113,24 +87,24 @@ A production-style \*\*Task Management REST API\*\* built with \*\*Spring Boot\*
 ?priority=HIGH
 ?status=IN_PROGRESS&priority=MEDIUM
 
-```text
+```
 
-\### 📘 Swagger UI
+### 📘 Swagger UI
 
 Once the app is running:
 
-```text
+````text
 
 http://localhost:8080/swagger-ui/index.html
 
-```text
+text
 
-\### 🧪 Example Request
+### 🧪 Example Request
 Create Task
 
 POST /api/tasks
 
-```text
+```JSON
 
 {
   "title": "Finish backend project",
@@ -139,28 +113,28 @@ POST /api/tasks
   "dueDate": "2026-04-20T18:00:00"
 }
 
-```text
+````
 
-\### ⚙️ Local Setup
+### ⚙️ Local Setup
 
 1. Clone repo
 
-```text
+````text
 
 git clone https://github.com/aaali-software/task-api.git
 cd task-api
 
-```text
+text
 
 2. Configure PostgreSQL
 
 Create a database:
 
-```text
+```sql
 
 CREATE DATABASE taskdb;
 
-```text
+````
 
 Update application.properties :
 
@@ -170,7 +144,7 @@ spring.datasource.url=jdbc:postgresql://localhost:5432/taskdb
 spring.datasource.username=postgres
 spring.datasource.password=your_password
 
-```text
+```
 
 3. Run the app
 
@@ -178,39 +152,46 @@ spring.datasource.password=your_password
 
 ./gradlew bootRun
 
-```text
+```
 
-\### 🧪 Run Tests
+### 🧪 Run Tests
 
 ```text
 
 ./gradlew test
 
-```text
+```
 
-\### 📊 Code Coverage
+### 📊 Code Coverage
+
 83%+ coverage
 Service layer fully tested (including filtering & sorting branches)
 Controller layer tested with MockMvc
 
-\### 🚀 Future Improvements
+### 🚀 Future Improvements
+
 - Authentication (JWT)
 - Role-based access control
 - Dockerization
 - Cloud deployment (Render / Railway)
 - API rate limiting
 
-\### 👨‍💻 Author
+### 👨‍💻 Author
 
 Aziz Ali
 
 GitHub: https://github.com/aaali-software
 LinkedIn: https://www.linkedin.com/in/aziz-ali-5518128a/
 
-\### ⭐ Notes
+### ⭐ Notes
 
 This project was built to simulate a real-world backend service, focusing on:
 
 - clean architecture
 - test-driven development practices
 - production-ready API patterns
+
+## 📄 License
+
+MIT License  
+See `LICENSE` file for details.
