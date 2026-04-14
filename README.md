@@ -32,7 +32,7 @@ A production-style **Task Management REST API** built with **Spring Boot**, feat
 
 - **PostgreSQL**
 
-- \*\*Gradle\*\*
+- **Gradle**
 
 - **JUnit 5 + Mockito**
 
@@ -65,61 +65,52 @@ A production-style **Task Management REST API** built with **Spring Boot**, feat
 ### Pagination
 
 ```text
-
 ?page=0\&size=10
-
 ```
 
 ### Sorting
 
 ```text
-
 ?sort=createdAt,desc
 ?sort=dueDate,asc
-
 ```
 
 ### Filtering
 
 ```text
-
 ?status=PENDING
 ?priority=HIGH
 ?status=IN_PROGRESS&priority=MEDIUM
-
 ```
 
 ### 📘 Swagger UI
 
 Once the app is running:
 
-````text
-
+```text
 http://localhost:8080/swagger-ui/index.html
-
-text
+```
 
 ### 🧪 Example Request
+
 Create Task
 
 POST /api/tasks
 
-```JSON
-
+```text
 {
   "title": "Finish backend project",
   "description": "Complete Task API with tests and deployment",
   "priority": "HIGH",
   "dueDate": "2026-04-20T18:00:00"
 }
-
-````
+```
 
 ### ⚙️ Local Setup
 
 1. Clone repo
 
-````text
+```text
 git clone https://github.com/aaali-software/task-api.git
 cd task-api
 ```
@@ -128,9 +119,9 @@ cd task-api
 
 Create a database:
 
-```sql
+```text
 CREATE DATABASE taskdb;
-````
+```
 
 Update application.properties :
 
