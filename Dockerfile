@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Build the app
-RUN ./gradlew build -x test
+RUN chmod +x gradlew && ./gradlew build -x test
 
 # Expose port (Render uses dynamic PORT, but this is fine)
 EXPOSE 8080
