@@ -1,6 +1,6 @@
 # Task API 🚀
 
-A production-style \*\*Task Management REST API\*\* built with \*\*Spring Boot\*\*, featuring PostgreSQL persistence, pagination, sorting, filtering, and full test coverage.
+A production-style **Task Management REST API** built with **Spring Boot**, featuring PostgreSQL persistence, pagination, sorting, filtering, and full test coverage.
 
 ---
 
@@ -24,19 +24,19 @@ A production-style \*\*Task Management REST API\*\* built with \*\*Spring Boot\*
 
 ## 🛠️ Tech Stack
 
-- \*\*Java 21\*\*
+- **Java 21**
 
-- \*\*Spring Boot\*\*
+- **Spring Boot**
 
-- \*\*Spring Data JPA\*\*
+- **Spring Data JPA**
 
-- \*\*PostgreSQL\*\*
+- **PostgreSQL**
 
 - \*\*Gradle\*\*
 
-- \*\*JUnit 5 + Mockito\*\*
+- **JUnit 5 + Mockito**
 
-- \*\*Swagger (OpenAPI)\*\*
+- **Swagger (OpenAPI)**
 
 ---
 
@@ -120,46 +120,36 @@ POST /api/tasks
 1. Clone repo
 
 ````text
-
 git clone https://github.com/aaali-software/task-api.git
 cd task-api
-
-text
+```
 
 2. Configure PostgreSQL
 
 Create a database:
 
 ```sql
-
 CREATE DATABASE taskdb;
-
 ````
 
 Update application.properties :
 
 ```text
-
 spring.datasource.url=jdbc:postgresql://localhost:5432/taskdb
 spring.datasource.username=postgres
 spring.datasource.password=your_password
-
 ```
 
 3. Run the app
 
 ```text
-
 ./gradlew bootRun
-
 ```
 
 ### 🧪 Run Tests
 
 ```text
-
 ./gradlew test
-
 ```
 
 ### 📊 Code Coverage
@@ -181,6 +171,7 @@ Controller layer tested with MockMvc
 Aziz Ali
 
 GitHub: https://github.com/aaali-software
+
 LinkedIn: https://www.linkedin.com/in/aziz-ali-5518128a/
 
 ### ⭐ Notes
