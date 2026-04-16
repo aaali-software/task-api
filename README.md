@@ -1,6 +1,6 @@
 # Task API 🚀
 
-![CI](https://github.com/aaali-software/task-api/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/aaali-software/task-api/actions/workflows/ci.yml/badge.svg?branch=main&event=push)
 
 A production-style **Task Management REST API** built with **Spring Boot**, deployed via Docker and backed by PostgreSQL, featuring CRUD operations, filtering, pagination, sorting, Swagger docs, and 83% automated test coverage.
 
