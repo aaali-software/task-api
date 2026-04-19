@@ -22,9 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Represents a task in the system.
- * Each task has a title, description, status, priority, due date, and timestamps for creation and updates.
- * I modeled a Task entity with status and priority enums, persisted via JPA.
+ * JPA entity representing a task managed by the API.
  */
 
 @Entity
@@ -59,14 +57,8 @@ public class Task {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
-
     /**
-     * Lifecycle callbacks to set timestamps and default status before persisting and updating the entity.
-     * onCreate() sets the createdAt timestamp and initializes the status to PENDING when a new task is created.
-     * onUpdate() updates the updatedAt timestamp whenever the task is modified.
-     * This ensures that we have accurate tracking of when tasks are created and updated, and that new tasks start with a consistent status.
-     * Avoids manual setting of these fields in the service layer, reducing potential errors and ensuring data integrity.
+     * Initializes default values before the entity is first persisted.
      */
     @PrePersist
     public void onCreate() {
@@ -74,10 +66,11 @@ public class Task {
         this.status = TaskStatus.PENDING;
     }
 
+    /**
+     * Updates the modification timestamp before the entity is saved.
+     */
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-
 }

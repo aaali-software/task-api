@@ -6,13 +6,7 @@ import com.aziz.taskapi.enums.TaskPriority;
 import com.aziz.taskapi.enums.TaskStatus;
 
 /**
- * DTO class for Task responses.
- * This class contains fields that represent the properties of a Task, such as id, title,
- * description, status, priority, due date, created at, and updated at. It serves as a data transfer object for sending Task information in API responses.
- * I created the TaskResponse class to provide a clear and specific structure for responses that contain Task information. 
- * In other words, creating response DTOs seperates the API contract from the internal JPA data model (entity), allowing for 
- * more flexibility in how data is presented to clients and how it is stored in the database.
- * This allows for better separation of concerns, as the response structure is distinct from the entity structure used for database interactions.
+ * Response payload describing a task returned by the API.
  */
 public class TaskResponse {
 

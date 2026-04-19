@@ -4,12 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
- * API error response class to standardize error responses across the application.
- * This class contains fields for timestamp, HTTP status code, error message, and validation errors (if any).
- * I created the ApiErrorResponse class to encapsulate error details in a consistent format for all API responses.
- * This allows for better error handling and debugging, as clients can easily understand the structure of error 
- * responses and extract relevant information when an error occurs. The class includes constructors, getters, 
- * and setters for all fields to facilitate its usage in exception handling scenarios.
+ * Standard error payload returned by the API.
  */
 
 public class ApiErrorResponse {
@@ -23,6 +18,15 @@ public class ApiErrorResponse {
     public ApiErrorResponse() {
     }
 
+    /**
+     * Creates an error payload.
+     *
+     * @param timestamp time when the error was produced
+     * @param status HTTP status code
+     * @param error HTTP reason phrase
+     * @param message application-specific error message
+     * @param validationErrors field-level validation errors when applicable
+     */
     public ApiErrorResponse(LocalDateTime timestamp, int status, String error, String message,
         Map<String, String> validationErrors) {
         this.timestamp = timestamp;

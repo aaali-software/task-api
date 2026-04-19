@@ -10,20 +10,22 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
- * Global exception handler to manage exceptions across the application.
- * This class uses @RestControllerAdvice to intercept exceptions thrown by controllers and return standardized error responses.
- * I implemented the GlobalExceptionHandler class to handle specific exceptions like ResourceNotFoundException and 
- * MethodArgumentNotValidException, as well as a generic handler for all other exceptions. Each handler constructs 
- * an ApiErrorResponse object with relevant details and returns it in the response body with the appropriate HTTP status code. 
- * This approach ensures consistent error handling and improves the client experience when errors occur.
+ * Converts application exceptions into consistent HTTP error responses.
  */
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
+    /**
+     * Handles missing resource errors.
+     */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
+        log.warn("Resource not found: {}", ex.getMessage());
         ApiErrorResponse errorResponse = new ApiErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
@@ -35,6 +37,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    /**
+     * Handles bean validation failures for request payloads.
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> validationErrors = new HashMap<>();
@@ -42,6 +47,7 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 validationErrors.put(error.getField(), error.getDefaultMessage())
         );
+        log.warn("Validation failed for request: {}", validationErrors);
 
         ApiErrorResponse errorResponse = new ApiErrorResponse(
                 LocalDateTime.now(),
@@ -54,8 +60,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
+    /**
+     * Handles unexpected exceptions not covered by more specific handlers.
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGenericException(Exception ex) {
+        log.error("Unhandled exception caught by global handler", ex);
         ApiErrorResponse errorResponse = new ApiErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),

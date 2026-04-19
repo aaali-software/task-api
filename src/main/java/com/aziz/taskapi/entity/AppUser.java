@@ -2,6 +2,9 @@ package com.aziz.taskapi.entity;
 
 import jakarta.persistence.*;
 
+/**
+ * JPA entity representing an authenticated application user.
+ */
 @Entity
 @Table(name = "users")
 public class AppUser {

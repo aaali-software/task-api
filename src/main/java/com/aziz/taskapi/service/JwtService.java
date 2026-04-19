@@ -13,6 +13,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+/**
+ * Creates and validates JWTs used by the API.
+ */
 @Service
 public class JwtService {
 
@@ -22,6 +25,12 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long expiration;
 
+    /**
+     * Generates a signed JWT for the supplied username.
+     *
+     * @param username token subject
+     * @return signed JWT string
+     */
     public String generateToken(String username) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expiration);
@@ -34,10 +43,23 @@ public class JwtService {
                 .compact();
     }
 
+    /**
+     * Extracts the username stored in a JWT subject claim.
+     *
+     * @param token signed JWT
+     * @return username from the token subject
+     */
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
 
+    /**
+     * Checks whether a token belongs to the expected user and is not expired.
+     *
+     * @param token signed JWT
+     * @param username expected username
+     * @return {@code true} when the token is valid for the user
+     */
     public boolean isTokenValid(String token, String username) {
         String extractedUsername = extractUsername(token);
         return extractedUsername.equals(username) && !isTokenExpired(token);

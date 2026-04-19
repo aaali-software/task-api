@@ -2,6 +2,11 @@ package com.aziz.taskapi.dto;
 
 import java.util.List;
 
+/**
+ * Generic wrapper for paginated API responses.
+ *
+ * @param <T> item type contained in the page
+ */
 public class PagedResponse<T> {
 
     private List<T> content;

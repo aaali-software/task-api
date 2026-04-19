@@ -25,17 +25,7 @@ import com.aziz.taskapi.dto.PagedResponse;
 import jakarta.validation.Valid;
 
 /**
- * Controller for handling Task-related requests.
- * This class provides REST endpoints for retrieving all tasks and getting a task by its ID.
- * It uses the TaskService to delegate the business logic and interact with the TaskRepository.
- * I created a TaskController class annotated with @RestController and @RequestMapping to define the base URL for task-related endpoints.
- * The controller has two endpoints: one for fetching all tasks (GET /api/tasks) and another for retrieving a specific task by its ID (GET /api/tasks/{id}).
- * Additionally, I added a POST endpoint to create a new task, which accepts a TaskCreateRequest object in the request body and returns the created Task with a 201 Created status.
- * I also added a PATCH endpoint to update the status of an existing task, which accepts a TaskStatusUpdateRequest object in the request body and returns the updated Task.
- * The controller methods call the corresponding service methods to perform the necessary operations and return the results as JSON responses.
- * I also added a PUT endpoint to update other fields of a Task (e.g., title, description, priority, due date) using a TaskUpdateRequest object, which can be implemented in the future if needed.
- * Finally, I added a DELETE endpoint to delete a Task by its ID, which can be implemented in the future to provide full CRUD functionality for Task entities.
- * This design follows the typical Spring Boot architecture, separating concerns between the controller (handling HTTP requests), service (business logic), and repository (data access).
+ * Exposes REST endpoints for managing tasks.
  */
 @RestController
 @RequestMapping("/api/tasks")
@@ -47,6 +37,16 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    /**
+     * Returns a paged list of tasks with optional status and priority filters.
+     *
+     * @param status optional status filter
+     * @param priority optional priority filter
+     * @param page zero-based page index
+     * @param size page size
+     * @param sort sort expression in the form {@code field[,direction]}
+     * @return paged task response
+     */
     @GetMapping
     public PagedResponse<TaskResponse> getAllTasks(
             @RequestParam(required = false) TaskStatus status,
@@ -62,29 +62,60 @@ public class TaskController {
         return taskService.getAllTasks(status, priority, page, size, sortBy, direction);
     }
 
+    /**
+     * Returns a task by its identifier.
+     *
+     * @param id task identifier
+     * @return the matching task
+     */
     @GetMapping("/{id}")
     public TaskResponse getTaskById(@PathVariable Long id) {
         return taskService.getTaskById(id);
     }
 
+    /**
+     * Creates a new task.
+     *
+     * @param request task creation payload
+     * @return the created task
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TaskResponse createTask(@Valid @RequestBody TaskCreateRequest request) {
         return taskService.createTask(request);
     }
 
+    /**
+     * Updates only the status of an existing task.
+     *
+     * @param id task identifier
+     * @param request status update payload
+     * @return the updated task
+     */
     @PatchMapping("/{id}/status")
     public TaskResponse updateTaskStatus(@PathVariable Long id, @Valid 
                                 @RequestBody TaskStatusUpdateRequest request) {
         return taskService.updateTaskStatus(id, request);
     }
 
+    /**
+     * Replaces the mutable fields of an existing task.
+     *
+     * @param id task identifier
+     * @param request task update payload
+     * @return the updated task
+     */
     @PutMapping("/{id}")
     public TaskResponse updateTask(@PathVariable Long id,
                             @Valid @RequestBody TaskUpdateRequest request) {
         return taskService.updateTask(id, request);
     }
 
+    /**
+     * Deletes a task by its identifier.
+     *
+     * @param id task identifier
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable Long id) {

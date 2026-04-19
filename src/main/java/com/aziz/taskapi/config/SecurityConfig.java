@@ -15,6 +15,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.aziz.taskapi.service.AppUserDetailsService;
 
+/**
+ * Configures stateless JWT-based security for the application.
+ */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -25,9 +28,16 @@ public class SecurityConfig {
     public SecurityConfig(AppUserDetailsService userDetailsService,
             JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+            this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+    /**
+     * Builds the application's HTTP security configuration.
+     *
+     * @param http Spring Security HTTP builder
+     * @return configured security filter chain
+     * @throws Exception when security configuration fails
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -47,11 +57,23 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Provides the password encoder used for storing user passwords.
+     *
+     * @return password encoder bean
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Exposes the framework-managed authentication manager.
+     *
+     * @param config authentication configuration
+     * @return authentication manager bean
+     * @throws Exception when the manager cannot be created
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

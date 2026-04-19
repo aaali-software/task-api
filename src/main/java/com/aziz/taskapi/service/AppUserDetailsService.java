@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.aziz.taskapi.repository.UserRepository;
 
+/**
+ * Loads persisted application users for Spring Security authentication.
+ */
 @Service
 public class AppUserDetailsService implements UserDetailsService {
 
@@ -17,6 +20,13 @@ public class AppUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Loads a user by username and maps it to Spring Security's {@link UserDetails}.
+     *
+     * @param username username to load
+     * @return authenticated user details
+     * @throws UsernameNotFoundException when the username does not exist
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepository.findByUsername(username)

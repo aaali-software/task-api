@@ -1,5 +1,8 @@
 package com.aziz.taskapi.dto;
 
+/**
+ * Response payload containing a JWT.
+ */
 public class AuthResponse {
 
     private String token;

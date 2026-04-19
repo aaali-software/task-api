@@ -9,6 +9,9 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
+/**
+ * Request payload used to update an existing task.
+ */
 public class TaskUpdateRequest {
 
     @NotBlank(message = "Title is required")

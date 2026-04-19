@@ -2,6 +2,9 @@ package com.aziz.taskapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Request payload used for registration and login.
+ */
 public class AuthRequest {
 
     @NotBlank(message = "Username is required")
