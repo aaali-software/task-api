@@ -4,10 +4,18 @@ import java.time.LocalDateTime;
 
 import com.aziz.taskapi.enums.TaskPriority;
 import com.aziz.taskapi.enums.TaskStatus;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Response payload describing a task returned by the API.
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TaskResponse {
 
     private Long id;
@@ -18,84 +26,4 @@ public class TaskResponse {
     private LocalDateTime dueDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    public TaskResponse() {
-    }
-
-    public TaskResponse(Long id, String title, String description, TaskStatus status,
-                        TaskPriority priority, LocalDateTime dueDate,
-                        LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.status = status;
-        this.priority = priority;
-        this.dueDate = dueDate;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public TaskStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(TaskStatus status) {
-        this.status = status;
-    }
-
-    public TaskPriority getPriority() {
-        return priority;
-    }
-
-    public void setPriority(TaskPriority priority) {
-        this.priority = priority;
-    }
-
-    public LocalDateTime getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDateTime dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }
