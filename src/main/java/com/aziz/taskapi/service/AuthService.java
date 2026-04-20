@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.aziz.taskapi.dto.AuthRequest;
 import com.aziz.taskapi.dto.AuthResponse;
 import com.aziz.taskapi.entity.AppUser;
+import com.aziz.taskapi.exception.DuplicateUsernameException;
 import com.aziz.taskapi.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,7 @@ public class AuthService {
         log.debug("Attempting registration for username={}", request.getUsername());
         if (userRepository.existsByUsername(request.getUsername())) {
             log.warn("Registration rejected because username already exists: {}", request.getUsername());
-            throw new IllegalArgumentException("Username already exists");
+            throw new DuplicateUsernameException("Username already exists");
         }
 
         AppUser user = new AppUser();

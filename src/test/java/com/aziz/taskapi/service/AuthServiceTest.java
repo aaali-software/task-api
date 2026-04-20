@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.aziz.taskapi.dto.AuthRequest;
 import com.aziz.taskapi.dto.AuthResponse;
 import com.aziz.taskapi.entity.AppUser;
+import com.aziz.taskapi.exception.DuplicateUsernameException;
 import com.aziz.taskapi.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,8 +70,8 @@ class AuthServiceTest {
 
         when(userRepository.existsByUsername("aziz")).thenReturn(true);
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        DuplicateUsernameException exception = assertThrows(
+                DuplicateUsernameException.class,
                 () -> authService.register(request));
 
         assertEquals("Username already exists", exception.getMessage());

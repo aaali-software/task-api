@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.aziz.taskapi.dto.AuthRequest;
 import com.aziz.taskapi.dto.AuthResponse;
+import com.aziz.taskapi.exception.DuplicateUsernameException;
 import com.aziz.taskapi.service.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,6 +51,26 @@ class AuthControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.token").value("mock-jwt-token"));
+    }
+
+    @Test
+    @DisplayName("POST /api/auth/register with duplicate username should return 409")
+    void shouldReturnConflictWhenRegisteringDuplicateUsername() throws Exception {
+        AuthRequest request = new AuthRequest();
+        request.setUsername("aziz");
+        request.setPassword("password123");
+
+        when(authService.register(any(AuthRequest.class)))
+                .thenThrow(new DuplicateUsernameException("Username already exists"));
+
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.error").value("Conflict"))
+                .andExpect(jsonPath("$.message").value("Username already exists"));
     }
 
     @Test
