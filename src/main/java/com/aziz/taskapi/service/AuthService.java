@@ -10,6 +10,7 @@ import com.aziz.taskapi.dto.AuthResponse;
 import com.aziz.taskapi.entity.AppUser;
 import com.aziz.taskapi.exception.DuplicateUsernameException;
 import com.aziz.taskapi.repository.UserRepository;
+import com.aziz.taskapi.enums.Role;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,6 +52,7 @@ public class AuthService {
         AppUser user = new AppUser();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.USER);
 
         userRepository.save(user);
         log.info("User registered successfully for username={}", user.getUsername());

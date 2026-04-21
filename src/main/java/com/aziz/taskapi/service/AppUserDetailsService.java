@@ -21,7 +21,8 @@ public class AppUserDetailsService implements UserDetailsService {
     }
 
     /**
-     * Loads a user by username and maps it to Spring Security's {@link UserDetails}.
+     * Loads a user by username and maps it to Spring Security's
+     * {@link UserDetails}.
      *
      * @param username username to load
      * @return authenticated user details
@@ -35,7 +36,7 @@ public class AppUserDetailsService implements UserDetailsService {
         return User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
-                .authorities("ROLE_USER")
+                .authorities("ROLE_" + user.getRole().name())
                 .build();
     }
 }

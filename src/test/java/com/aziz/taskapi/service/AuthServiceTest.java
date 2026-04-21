@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.aziz.taskapi.dto.AuthRequest;
 import com.aziz.taskapi.dto.AuthResponse;
 import com.aziz.taskapi.entity.AppUser;
+import com.aziz.taskapi.enums.Role;
 import com.aziz.taskapi.exception.DuplicateUsernameException;
 import com.aziz.taskapi.repository.UserRepository;
 
@@ -58,8 +60,12 @@ class AuthServiceTest {
 
         verify(userRepository, times(1)).existsByUsername("aziz");
         verify(passwordEncoder, times(1)).encode("password123");
-        verify(userRepository, times(1)).save(any(AppUser.class));
         verify(jwtService, times(1)).generateToken("aziz");
+        ArgumentCaptor<AppUser> userCaptor = ArgumentCaptor.forClass(AppUser.class);
+        verify(userRepository).save(userCaptor.capture());
+        AppUser savedUser = userCaptor.getValue();
+        assertEquals(Role.USER, savedUser.getRole());
+
     }
 
     @Test
