@@ -24,6 +24,7 @@ A production-style **Task Management REST API** built with **Spring Boot**, depl
 - ✅ Authentication (JWT)
 - ✅ Role-based authorization
 - ✅ Caching with eviction
+- ✅ Logging + Observability
 - ✅ CI/CD pipeline (GitHub Actions)
 - ✅ 83%+ automated test coverage (JUnit + Mockito)
 
