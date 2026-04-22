@@ -6,6 +6,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 
 import com.aziz.taskapi.dto.PagedResponse;
 import com.aziz.taskapi.dto.TaskCreateRequest;
@@ -76,10 +78,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Cacheable(value = "tasks", key = "#id")
     public TaskResponse getTaskById(Long id) {
-        log.debug("Fetching task with id={}", id);
+        log.info("Fetching task by id={}", id);
+
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Task not found for id={}", id);
+                    return new ResourceNotFoundException("Task not found with id: " + id);
+                });
 
         return mapToTaskResponse(task);
     }
@@ -100,20 +107,27 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @CacheEvict(value = "tasks", key = "#id")
     public TaskResponse updateTaskStatus(Long id, TaskStatusUpdateRequest request) {
-        log.info("Updating task status for id={} to {}", id, request.getStatus());
+        log.info("Updating task status for id={} to status={}", id, request.getStatus());
+
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Task not found while updating status for id={}", id);
+                    return new ResourceNotFoundException("Task not found with id: " + id);
+                });
 
         task.setStatus(request.getStatus());
-
         Task updatedTask = taskRepository.save(task);
+
         return mapToTaskResponse(updatedTask);
     }
 
     @Override
+    @CacheEvict(value = "tasks", key = "#id")
     public TaskResponse updateTask(Long id, TaskUpdateRequest request) {
-        log.info("Updating task with id={}", id);
+        log.info("Updating task id={}", id);
+
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
 
@@ -128,12 +142,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @CacheEvict(value = "tasks", key = "#id")
     public void deleteTask(Long id) {
-        log.warn("Deleting task with id={}", id);
+        log.info("Deleting task id={}", id);
+
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Task not found while deleting id={}", id);
+                    return new ResourceNotFoundException("Task not found with id: " + id);
+                });
 
         taskRepository.delete(task);
+        log.info("Task deleted successfully for id={}", id);
     }
 
     private TaskResponse mapToTaskResponse(Task task) {
