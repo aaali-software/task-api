@@ -21,6 +21,10 @@ A production-style **Task Management REST API** built with **Spring Boot**, depl
 - ✅ Sorting (`sort=field,asc|desc`)
 - ✅ PostgreSQL persistence
 - ✅ Swagger/OpenAPI documentation
+- ✅ Authentication (JWT)
+- ✅ Role-based authorization
+- ✅ Caching with eviction
+- ✅ CI/CD pipeline (GitHub Actions)
 - ✅ 83%+ automated test coverage (JUnit + Mockito)
 
 ---
@@ -143,9 +147,6 @@ spring.datasource.password=your_password
 
 ### 🚀 Future Improvements
 
-- Authentication (JWT)
-- Role-based access control
-- CI/CD pipeline (GitHub Actions)
 - Docker Compose for local environment
 - API rate limiting
 
