@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.aziz.taskapi.dto.AuthRequest;
 import com.aziz.taskapi.dto.AuthResponse;
+import com.aziz.taskapi.dto.RefreshTokenRequest;
 import com.aziz.taskapi.exception.DuplicateUsernameException;
 import com.aziz.taskapi.service.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +42,7 @@ class AuthControllerTest {
         request.setUsername("aziz");
         request.setPassword("password123");
 
-        AuthResponse response = new AuthResponse("mock-jwt-token");
+        AuthResponse response = new AuthResponse("mock-access-token", "mock-refresh-token");
 
         when(authService.register(any(AuthRequest.class))).thenReturn(response);
 
@@ -50,7 +51,8 @@ class AuthControllerTest {
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.token").value("mock-jwt-token"));
+                .andExpect(jsonPath("$.accessToken").value("mock-access-token"))
+                .andExpect(jsonPath("$.refreshToken").value("mock-refresh-token"));
     }
 
     @Test
@@ -80,7 +82,7 @@ class AuthControllerTest {
         request.setUsername("aziz");
         request.setPassword("password123");
 
-        AuthResponse response = new AuthResponse("mock-jwt-token");
+        AuthResponse response = new AuthResponse("mock-access-token", "mock-refresh-token");
 
         when(authService.login(any(AuthRequest.class))).thenReturn(response);
 
@@ -89,7 +91,27 @@ class AuthControllerTest {
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.token").value("mock-jwt-token"));
+                .andExpect(jsonPath("$.accessToken").value("mock-access-token"))
+                .andExpect(jsonPath("$.refreshToken").value("mock-refresh-token"));
+    }
+
+    @Test
+    @DisplayName("POST /api/auth/refresh should return new tokens and 200")
+    void shouldRefreshTokens() throws Exception {
+        RefreshTokenRequest request = new RefreshTokenRequest();
+        request.setRefreshToken("existing-refresh-token");
+
+        AuthResponse response = new AuthResponse("new-access-token", "new-refresh-token");
+
+        when(authService.refreshToken(any(RefreshTokenRequest.class))).thenReturn(response);
+
+        mockMvc.perform(post("/api/auth/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.accessToken").value("new-access-token"))
+                .andExpect(jsonPath("$.refreshToken").value("new-refresh-token"));
     }
 
     @Test
@@ -113,6 +135,18 @@ class AuthControllerTest {
         request.setPassword("");
 
         mockMvc.perform(post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("POST /api/auth/refresh with invalid payload should return 400")
+    void shouldRejectInvalidRefreshRequest() throws Exception {
+        RefreshTokenRequest request = new RefreshTokenRequest();
+        request.setRefreshToken("");
+
+        mockMvc.perform(post("/api/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());

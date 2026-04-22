@@ -21,12 +21,17 @@ A production-style **Task Management REST API** built with **Spring Boot**, depl
 - ✅ Sorting (`sort=field,asc|desc`)
 - ✅ PostgreSQL persistence
 - ✅ Swagger/OpenAPI documentation
-- ✅ Authentication (JWT)
-- ✅ Role-based authorization
 - ✅ Caching with eviction
 - ✅ Logging + Observability
 - ✅ CI/CD pipeline (GitHub Actions)
 - ✅ 83%+ automated test coverage (JUnit + Mockito)
+
+## 🔐 Authentication
+
+- ✅ JWT-based authentication
+- ✅ Access tokens (short-lived)
+- ✅ Refresh tokens (DB-backed, rotated on use)
+- ✅ Role-based authorization (USER / ADMIN)
 
 ---
 

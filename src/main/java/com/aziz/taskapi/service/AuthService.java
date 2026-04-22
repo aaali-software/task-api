@@ -7,17 +7,20 @@ import org.springframework.stereotype.Service;
 
 import com.aziz.taskapi.dto.AuthRequest;
 import com.aziz.taskapi.dto.AuthResponse;
+import com.aziz.taskapi.dto.RefreshTokenRequest;
 import com.aziz.taskapi.entity.AppUser;
+import com.aziz.taskapi.enums.Role;
 import com.aziz.taskapi.exception.DuplicateUsernameException;
 import com.aziz.taskapi.repository.UserRepository;
-import com.aziz.taskapi.enums.Role;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Handles user registration and login workflows.
  */
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class AuthService {
 
@@ -25,16 +28,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-
-    public AuthService(UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            JwtService jwtService,
-            AuthenticationManager authenticationManager) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-            this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-    }
+    private final RefreshTokenService refreshTokenService;
 
     /**
      * Creates a user account and returns an authentication token.
@@ -43,9 +37,10 @@ public class AuthService {
      * @return JWT response for the created user
      */
     public AuthResponse register(AuthRequest request) {
-        log.debug("Attempting registration for username={}", request.getUsername());
+        log.info("Attempting to register username={}", request.getUsername());
+
         if (userRepository.existsByUsername(request.getUsername())) {
-            log.warn("Registration rejected because username already exists: {}", request.getUsername());
+            log.warn("Registration failed: username already exists: {}", request.getUsername());
             throw new DuplicateUsernameException("Username already exists");
         }
 
@@ -54,11 +49,13 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.USER);
 
-        userRepository.save(user);
-        log.info("User registered successfully for username={}", user.getUsername());
+        AppUser savedUser = userRepository.save(user);
+        log.info("User registered successfully: {}", savedUser.getUsername());
 
-        String token = jwtService.generateToken(user.getUsername());
-        return new AuthResponse(token);
+        String accessToken = jwtService.generateToken(savedUser.getUsername());
+        String refreshToken = refreshTokenService.createOrReplaceRefreshToken(savedUser).getToken();
+
+        return new AuthResponse(accessToken, refreshToken);
     }
 
     /**
@@ -68,12 +65,32 @@ public class AuthService {
      * @return JWT response for the authenticated user
      */
     public AuthResponse login(AuthRequest request) {
-        log.debug("Authenticating user with username={}", request.getUsername());
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        log.info("User authenticated successfully for username={}", request.getUsername());
+        log.info("Attempting login for username={}", request.getUsername());
 
-        String token = jwtService.generateToken(request.getUsername());
-        return new AuthResponse(token);
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+        );
+
+        AppUser user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        log.info("Login successful for username={}", request.getUsername());
+
+        String accessToken = jwtService.generateToken(user.getUsername());
+        String refreshToken = refreshTokenService.createOrReplaceRefreshToken(user).getToken();
+
+        return new AuthResponse(accessToken, refreshToken);
+    }
+
+    public AuthResponse refreshToken(RefreshTokenRequest request) {
+        var storedRefreshToken = refreshTokenService.verifyRefreshToken(request.getRefreshToken());
+        AppUser user = storedRefreshToken.getUser();
+
+        String newAccessToken = jwtService.generateToken(user.getUsername());
+        String newRefreshToken = refreshTokenService.createOrReplaceRefreshToken(user).getToken();
+
+        log.info("Refresh token flow successful for username={}", user.getUsername());
+
+        return new AuthResponse(newAccessToken, newRefreshToken);
     }
 }

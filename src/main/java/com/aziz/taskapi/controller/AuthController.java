@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aziz.taskapi.dto.AuthRequest;
 import com.aziz.taskapi.dto.AuthResponse;
+import com.aziz.taskapi.dto.RefreshTokenRequest;
 import com.aziz.taskapi.service.AuthService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -19,14 +21,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 @Slf4j
 public class AuthController {
 
     private final AuthService authService;
-
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
 
     /**
      * Registers a new user and returns a JWT for the created account.
@@ -51,5 +50,18 @@ public class AuthController {
     public AuthResponse login(@Valid @RequestBody AuthRequest request) {
         log.info("Login request received for username={}", request.getUsername());
         return authService.login(request);
+    }
+
+    /**
+     * Refreshes an access token using a valid refresh token.
+     * 
+     * @param request refresh token request containing the refresh token
+     * @return authentication response containing a new access token and refresh
+     *         token
+     */
+    @PostMapping("/refresh")
+    public AuthResponse refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+        log.info("Refresh token request received");
+        return authService.refreshToken(request);
     }
 }
