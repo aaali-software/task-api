@@ -1,6 +1,8 @@
 package com.aziz.taskapi.controller;
 
 import com.aziz.taskapi.service.TaskService;
+import com.aziz.taskapi.config.RateLimitingFilter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +26,16 @@ class TaskAuthorizationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private RateLimitingFilter rateLimitingFilter;
+
     @MockitoBean
     private TaskService taskService;
+
+    @BeforeEach
+    void resetRateLimiter() {
+        rateLimitingFilter.clearBuckets();
+    }
 
     @Test
     @DisplayName("DELETE /api/tasks/{id} without authentication should return 401")

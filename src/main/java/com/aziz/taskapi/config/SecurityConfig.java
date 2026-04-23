@@ -15,23 +15,20 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.aziz.taskapi.service.AppUserDetailsService;
 
+import lombok.AllArgsConstructor;
+
 /**
  * Configures stateless JWT-based security for the application.
  */
 @Configuration
 @EnableMethodSecurity
+@AllArgsConstructor
 public class SecurityConfig {
 
     private final AppUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
-
-    public SecurityConfig(AppUserDetailsService userDetailsService,
-            JwtAuthenticationFilter jwtAuthenticationFilter, CustomAuthenticationEntryPoint authenticationEntryPoint) {
-        this.userDetailsService = userDetailsService;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.authenticationEntryPoint = authenticationEntryPoint;
-    }
+    private final RateLimitingFilter rateLimitingFilter;
 
     /**
      * Builds the application's HTTP security configuration.
@@ -56,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/tasks/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .userDetailsService(userDetailsService)
+                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
