@@ -113,11 +113,12 @@ class TaskControllerTest {
         @Test
         @DisplayName("POST /api/tasks should create a task and return 201")
         void shouldCreateTask() throws Exception {
+                LocalDateTime dueDate = LocalDateTime.now().plusDays(7);  // do this to avoid serialization issues with JavaTimeModule in ObjectMapper aka bad data
                 TaskCreateRequest request = new TaskCreateRequest();
                 request.setTitle("New Task");
                 request.setDescription("Create controller test");
                 request.setPriority(TaskPriority.HIGH);
-                request.setDueDate(LocalDateTime.of(2026, 4, 25, 18, 0));
+                request.setDueDate(dueDate);
 
                 TaskResponse response = new TaskResponse(
                                 1L,
@@ -125,7 +126,7 @@ class TaskControllerTest {
                                 "Create controller test",
                                 TaskStatus.PENDING,
                                 TaskPriority.HIGH,
-                                LocalDateTime.of(2026, 4, 25, 18, 0),
+                                dueDate,
                                 LocalDateTime.of(2026, 4, 10, 10, 0),
                                 null);
 
