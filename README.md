@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/aaali-software/task-api/actions/workflows/ci.yml/badge.svg?branch=main&event=push)
 
-A production-style **Task Management REST API** built with **Spring Boot**, deployed via Docker and backed by PostgreSQL, featuring CRUD operations, filtering, pagination, sorting, Swagger docs, and 83% automated test coverage.
+A production-style **Task Management REST API** built with **Spring Boot**, secured with JWT authentication, containerized with Docker, and backed by PostgreSQL.
 
 ---
 
@@ -25,14 +25,31 @@ A production-style **Task Management REST API** built with **Spring Boot**, depl
 - ✅ API rate limiting
 - ✅ Logging + Observability
 - ✅ CI/CD pipeline (GitHub Actions)
-- ✅ 83%+ automated test coverage (JUnit + Mockito)
+- ✅ 87%+ automated test coverage (JUnit + Mockito)
 
-## 🔐 Authentication
+## 🔐 Security Features
 
 - ✅ JWT-based authentication
 - ✅ Access tokens (short-lived)
 - ✅ Refresh tokens (DB-backed, rotated on use)
-- ✅ Role-based authorization (USER / ADMIN)
+- ✅ Role-based authorization (`USER` / `ADMIN`)
+- ✅ Protected API endpoints
+- ✅ Rate limiting with Bucket4j
+
+## ⚡ Performance Features
+
+- Caffeine in-memory caching
+- Cache eviction on task updates/deletes
+- Pagination and sorting support
+
+## 🏗️ Architecture
+
+- Controller layer
+- Service layer
+- Repository layer
+- DTO-based request/response mapping
+- PostgreSQL persistence
+- Stateless JWT authentication
 
 ---
 
@@ -41,8 +58,11 @@ A production-style **Task Management REST API** built with **Spring Boot**, depl
 - **Java 21**
 - **Spring Boot**
 - **Spring Data JPA**
+- **Spring Security**
 - **PostgreSQL**
 - **Gradle**
+- **Caffeine Cache**
+- **Bucket4j**
 - **JUnit 5 + Mockito**
 - **Swagger (OpenAPI)**
 - **Docker**
@@ -60,6 +80,9 @@ A production-style **Task Management REST API** built with **Spring Boot**, depl
 | PATCH  | `/api/tasks/{id}/status` | Update task status                                      |
 | PUT    | `/api/tasks/{id}`        | Update full task                                        |
 | DELETE | `/api/tasks/{id}`        | Delete task                                             |
+| POST   | `/api/auth/register`     | Register a new user                                     |
+| POST   | `/api/auth/login`        | Authenticate user and access/refresh tokens             |
+| POST   | `/api/auth/refresh`      | Refresh access token                                    |
 
 ---
 
@@ -86,12 +109,26 @@ A production-style **Task Management REST API** built with **Spring Boot**, depl
 ?status=IN_PROGRESS&priority=MEDIUM
 ```
 
+## 🐳 Docker Compose
+
+Run the full stack locally:
+
+```bash
+docker compose up --build
+```
+
 ### 📘 Swagger UI
 
 Once the app is running:
 
 ```text
 http://localhost:8080/swagger-ui/index.html
+```
+
+Stop containers:
+
+```bash
+docker compose down
 ```
 
 ### 🧪 Example Request
@@ -148,14 +185,17 @@ spring.datasource.password=your_password
 
 ### 📊 Code Coverage
 
-- 83%+ coverage
+- 87% coverage across meaningful code
 - Service layer fully tested (including filtering & sorting branches)
 - Controller layer tested with MockMvc
 
 ### 🚀 Future Improvements
 
-- Docker Compose for local environment
-- Create and connect front end for UI/UX
+- Angular frontend UI
+- User dashboards and analytics
+- Distributed caching / Redis
+- Multi-device refresh token support
+- API monitoring and metrics
 
 ### 👨‍💻 Author
 
