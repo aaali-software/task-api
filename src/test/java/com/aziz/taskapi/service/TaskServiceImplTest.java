@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import com.aziz.taskapi.dto.TaskCreateRequest;
 import com.aziz.taskapi.dto.TaskStatusUpdateRequest;
 import com.aziz.taskapi.dto.TaskUpdateRequest;
 import com.aziz.taskapi.entity.Task;
@@ -232,7 +234,7 @@ class TaskServiceImplTest {
 
     @Test
     void shouldCreateTask() {
-        var request = new com.aziz.taskapi.dto.TaskCreateRequest();
+        var request = new TaskCreateRequest();
         request.setTitle("New Task");
         request.setDescription("Test description");
         request.setPriority(TaskPriority.HIGH);
@@ -253,6 +255,59 @@ class TaskServiceImplTest {
         assertEquals(TaskPriority.HIGH, result.getPriority());
 
         verify(taskRepository, times(1)).save(any(Task.class));
+    }
+
+    @Test
+    void shouldCreateTaskWithRequestedStatus() {
+        var request = new TaskCreateRequest();
+        request.setTitle("New Task");
+        request.setDescription("Test description");
+        request.setPriority(TaskPriority.HIGH);
+        request.setStatus(TaskStatus.IN_PROGRESS);
+
+        Task savedTask = Task.builder()
+                .id(1L)
+                .title("New Task")
+                .description("Test description")
+                .priority(TaskPriority.HIGH)
+                .status(TaskStatus.IN_PROGRESS)
+                .build();
+
+        when(taskRepository.save(any(Task.class))).thenReturn(savedTask);
+
+        var result = taskService.createTask(request);
+
+        assertEquals(TaskStatus.IN_PROGRESS, result.getStatus());
+
+        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
+        verify(taskRepository).save(taskCaptor.capture());
+        assertEquals(TaskStatus.IN_PROGRESS, taskCaptor.getValue().getStatus());
+    }
+
+    @Test
+    void shouldDefaultTaskStatusToPendingWhenCreateRequestStatusIsMissing() {
+        var request = new TaskCreateRequest();
+        request.setTitle("New Task");
+        request.setDescription("Test description");
+        request.setPriority(TaskPriority.HIGH);
+
+        Task savedTask = Task.builder()
+                .id(1L)
+                .title("New Task")
+                .description("Test description")
+                .priority(TaskPriority.HIGH)
+                .status(TaskStatus.PENDING)
+                .build();
+
+        when(taskRepository.save(any(Task.class))).thenReturn(savedTask);
+
+        var result = taskService.createTask(request);
+
+        assertEquals(TaskStatus.PENDING, result.getStatus());
+
+        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
+        verify(taskRepository).save(taskCaptor.capture());
+        assertEquals(TaskStatus.PENDING, taskCaptor.getValue().getStatus());
     }
 
     @Test

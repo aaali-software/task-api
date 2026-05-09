@@ -3,6 +3,7 @@ package com.aziz.taskapi.dto;
 import java.time.LocalDateTime;
 
 import com.aziz.taskapi.enums.TaskPriority;
+import com.aziz.taskapi.enums.TaskStatus;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
@@ -29,6 +30,8 @@ public class TaskCreateRequest {
 
     @NotNull(message = "Priority is required")
     private TaskPriority priority;
+
+    private TaskStatus status;
 
     @FutureOrPresent(message = "Due date must be in the present or future")
     private LocalDateTime dueDate;

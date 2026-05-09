@@ -63,7 +63,9 @@ public class Task {
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
-        this.status = TaskStatus.PENDING;
+        if (this.status == null) {
+            this.status = TaskStatus.PENDING;
+        }
     }
 
     /**

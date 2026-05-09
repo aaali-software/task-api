@@ -98,6 +98,7 @@ public class TaskServiceImpl implements TaskService {
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .priority(request.getPriority())
+                .status(request.getStatus() != null ? request.getStatus() : TaskStatus.PENDING)
                 .dueDate(request.getDueDate())
                 .build();
 
